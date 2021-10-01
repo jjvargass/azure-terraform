@@ -19,8 +19,9 @@ resource "azurerm_resource_group" "rg-sdssandbox-dev-eastUS-001" {
   name     = "rg-sdssandbox-dev-eastUS-001"
   location = "East  US"
 }
-
+# -- --
 # Key Vault
+# -- --
 resource "azurerm_key_vault" "kv-sdssandbox-dev" {
   name                = "kv-sdssandbox-dev"
   location            = azurerm_resource_group.rg-sdssandbox-dev-eastUS-001.location
@@ -34,7 +35,8 @@ resource "azurerm_key_vault" "kv-sdssandbox-dev" {
 
 }
 
-resource "azurerm_key_vault_access_policy" "kvap-sdssandbox-dev-01" {
+# Key Vault Access Policy del creador el key Vault (Cliente).
+resource "azurerm_key_vault_access_policy" "kvap-sdssandbox-dev-client" {
   key_vault_id = azurerm_key_vault.kv-sdssandbox-dev.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
@@ -96,3 +98,48 @@ resource "azurerm_key_vault_access_policy" "kvap-sdssandbox-dev-01" {
   ]
 
 }
+
+# -- --
+# Storage Account
+# El nombre solo permite minusculas y numeros | st-sdssandbox-dev
+# -- --
+resource "azurerm_storage_account" "stsdssandboxdev" {
+  name                     = "stsdssandboxdev"
+  resource_group_name      = azurerm_resource_group.rg-sdssandbox-dev-eastUS-001.name
+  location                 = azurerm_resource_group.rg-sdssandbox-dev-eastUS-001.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = {
+    environment = "dev"
+  }
+
+}
+
+# Container
+resource "azurerm_storage_container" "dls-sdssandbox-dev-empleados-fuente" {
+  name                  = "dls-sdssandbox-dev-empleados-fuente"
+  storage_account_name  = azurerm_storage_account.stsdssandboxdev.name
+  container_access_type = "private"
+}
+
+# access policy del storage container
+resource "azurerm_key_vault_access_policy" "kvap-sdssandbox-dev-storage-container" {
+  key_vault_id = azurerm_key_vault.kv-sdssandbox-dev.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_storage_account.stsdssandboxdev.identity.0.principal_id
+
+  secret_permissions = [
+    "get",
+    "list",
+  ]
+}
+
+
+# -- --
+# eee
+# -- --
