@@ -18,7 +18,13 @@ data "azurerm_client_config" "current" {}
 resource "azurerm_resource_group" "sds-rg01-dev-eastus" {
   name     = "sds-rg01-dev-eastus"
   location = "East  US"
+
+  tags = {
+    "environment"      = "dev"
+  }
+
 }
+
 # -- --
 # Key Vault
 # -- --
@@ -52,19 +58,19 @@ resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
     "recover",
     "backup",
     "restore",
-    # Cryptographic Operations
+    ## Cryptographic Operations
     # "decrypt",
     # "encrypt",
     # "unwrapKey",
     # "wrapKey",
     # "verify",
     # "sign",
-    # Privileged Key Operations
+    ## Privileged Key Operations
     # "purge",
   ]
 
   secret_permissions = [
-    # Secret Management Operations
+    ## Secret Management Operations
     "get",
     "list",
     "set",
@@ -72,12 +78,12 @@ resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
     "recover",
     "backup",
     "restore",
-    # Privileged Secret Operations
+    ## Privileged Secret Operations
     # "purge",
   ]
 
   certificate_permissions = [
-    # Certificate Management Operations
+    ## Certificate Management Operations
     "get",
     "list",
     "update",
@@ -93,7 +99,7 @@ resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
     "listissuers",
     "setissuers",
     "deleteissuers",
-    # Privileged Certificate Operations
+    ## Privileged Certificate Operations
     # "purge",
   ]
 
