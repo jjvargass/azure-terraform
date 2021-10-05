@@ -39,71 +39,69 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
     "environment"      = "dev"
   }
 
+  access_policy {
+    tenant_id    = data.azurerm_client_config.current.tenant_id
+    object_id    = data.azurerm_client_config.current.object_id
+
+    key_permissions = [
+      # -Key Management Operations
+      "Get",
+      "List",
+      "Update",
+      "Create",
+      "Import",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      # -Cryptographic Operations
+      # "decrypt",
+      # "encrypt",
+      # "unwrapKey",
+      # "wrapKey",
+      # "verify",
+      # "sign",
+      # -Privileged Key Operations
+      # "purge",
+    ]
+
+    secret_permissions = [
+      # -Secret Management Operations
+      "Get",
+      "List",
+      "Set",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      # -Privileged Secret Operations
+      "purge",
+    ]
+
+    certificate_permissions = [
+      # -Certificate Management Operations
+      "Get",
+      "List",
+      "Update",
+      "Create",
+      "Import",
+      "Delete",
+      "Recover",
+      "Backup",
+      "Restore",
+      "ManageContacts",
+      "ManageIssuers",
+      "GetIssuers",
+      "ListIssuers",
+      "SetIssuers",
+      "DeleteIssuers",
+      # -Privileged Certificate Operations
+      # "purge",
+    ]
+  }
 }
 
-# Key Vault Access Policy del creador el key Vault (Cliente).
-resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
-  key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
 
-  key_permissions = [
-    # Key Management Operations
-    "get",
-    "list",
-    "update",
-    "create",
-    "import",
-    "delete",
-    "recover",
-    "backup",
-    "restore",
-    ## Cryptographic Operations
-    # "decrypt",
-    # "encrypt",
-    # "unwrapKey",
-    # "wrapKey",
-    # "verify",
-    # "sign",
-    ## Privileged Key Operations
-    # "purge",
-  ]
-
-  secret_permissions = [
-    ## Secret Management Operations
-    "get",
-    "list",
-    "set",
-    "delete",
-    "recover",
-    "backup",
-    "restore",
-    ## Privileged Secret Operations
-    # "purge",
-  ]
-
-  certificate_permissions = [
-    ## Certificate Management Operations
-    "get",
-    "list",
-    "update",
-    "create",
-    "import",
-    "delete",
-    "recover",
-    "backup",
-    "restore",
-    "managecontacts",
-    "manageissuers",
-    "getissuers",
-    "listissuers",
-    "setissuers",
-    "deleteissuers",
-    ## Privileged Certificate Operations
-    # "purge",
-  ]
-
-}
 
 # -- --
 # Storage Account
