@@ -42,7 +42,7 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
 }
 
 # Key Vault Access Policy del creador el key Vault (Cliente).
-resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
+resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
   key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
