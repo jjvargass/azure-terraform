@@ -133,19 +133,6 @@ resource "azurerm_storage_container" "sds-dls01-dev-eastus" {
   container_access_type = "private"
 }
 
-# access policy del storage container (creo que no es necesario)
-
-# resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
-#   key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
-#   tenant_id    = data.azurerm_client_config.current.tenant_id
-#   object_id    = azurerm_storage_account.sdsst01deveastus.identity.0.principal_id
-
-#   secret_permissions = [
-#     "get",
-#     "list",
-#   ]
-# }
-
 # Secreto - connection string de storage container en Key Vault
 resource "azurerm_key_vault_secret" "sds-sect01-dev-connection-string-st01" {
   name         = "sds-sect01-dev-connection-string-st01"
