@@ -15,17 +15,17 @@ provider "azurerm" {
 data "azurerm_client_config" "current" {}
 
 # Create a resource group
-resource "azurerm_resource_group" "sds-rg01-dev-eastUS" {
-  name     = "sds-rg01-dev-eastUS"
+resource "azurerm_resource_group" "sds-rg01-dev-eastus" {
+  name     = "sds-rg01-dev-eastus"
   location = "East  US"
 }
 # -- --
 # Key Vault
 # -- --
-resource "azurerm_key_vault" "sds-kv01-dev-eastUS" {
-  name                = "sds-kv01-dev-eastUS"
-  location            = azurerm_resource_group.sds-rg01-dev-eastUS.location
-  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastUS.name
+resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
+  name                = "sds-kv01-dev-eastus"
+  location            = azurerm_resource_group.sds-rg01-dev-eastus.location
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "premium"
 
@@ -37,7 +37,7 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastUS" {
 
 # Key Vault Access Policy del creador el key Vault (Cliente).
 resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
-  key_vault_id = azurerm_key_vault.sds-kv01-dev-eastUS.id
+  key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = data.azurerm_client_config.current.object_id
 
@@ -101,12 +101,12 @@ resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-client" {
 
 # -- --
 # Storage Account
-# El nombre solo permite minusculas y numeros | sds-st01-dev-eastUS => sdsst01deveastus
+# El nombre solo permite minusculas y numeros | sds-st01-dev-eastus => sdsst01deveastus
 # -- --
 resource "azurerm_storage_account" "sdsst01deveastus" {
   name                     = "sdsst01deveastus"
-  resource_group_name      = azurerm_resource_group.sds-rg01-dev-eastUS.name
-  location                 = azurerm_resource_group.sds-rg01-dev-eastUS.location
+  resource_group_name      = azurerm_resource_group.sds-rg01-dev-eastus.name
+  location                 = azurerm_resource_group.sds-rg01-dev-eastus.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -121,16 +121,16 @@ resource "azurerm_storage_account" "sdsst01deveastus" {
 }
 
 # Container - Data Lake Store
-resource "azurerm_storage_container" "sds-dls01-dev-eastUS" {
-  name                  = "sds-dls01-dev-eastUS"
+resource "azurerm_storage_container" "sds-dls01-dev-eastus" {
+  name                  = "sds-dls01-dev-eastus"
   storage_account_name  = azurerm_storage_account.sdsst01deveastus.name
   container_access_type = "private"
 }
 
 # access policy del storage container (creo que no es necesario)
 
-# resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastUS" {
-#   key_vault_id = azurerm_key_vault.sds-kv01-dev-eastUS.id
+# resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
+#   key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
 #   tenant_id    = data.azurerm_client_config.current.tenant_id
 #   object_id    = azurerm_storage_account.sdsst01deveastus.identity.0.principal_id
 
@@ -144,7 +144,7 @@ resource "azurerm_storage_container" "sds-dls01-dev-eastUS" {
 resource "azurerm_key_vault_secret" "sds-sect01-dev-connection-string-st01" {
   name         = "sds-sect01-dev-connection-string-st01"
   value        = azurerm_storage_account.sdsst01deveastus.primary_connection_string
-  key_vault_id = azurerm_key_vault.sds-kv01-dev-eastUS.id
+  key_vault_id = azurerm_key_vault.sds-kv01-dev-eastus.id
 }
 
 # -- --
