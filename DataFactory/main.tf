@@ -55,14 +55,14 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
       "Backup",
       "Restore",
       # -Cryptographic Operations
-      # "decrypt",
-      # "encrypt",
-      # "unwrapKey",
-      # "wrapKey",
-      # "verify",
-      # "sign",
+      # "Decrypt",
+      # "Encrypt",
+      # "UnwrapKey",
+      # "WrapKey",
+      # "Verify",
+      # "Sign",
       # -Privileged Key Operations
-      # "purge",
+      # "Purge",
     ]
 
     secret_permissions = [
@@ -96,7 +96,7 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
       "SetIssuers",
       "DeleteIssuers",
       # -Privileged Certificate Operations
-      # "purge",
+      # "Purge",
     ]
   }
 }
@@ -141,5 +141,3 @@ resource "azurerm_key_vault_secret" "sds-sect01-dev-connection-string-st01" {
 # -- --
 # eee
 # -- --
-usuario: AdministradorJOTA
-Pass= jotajota-123$$##
