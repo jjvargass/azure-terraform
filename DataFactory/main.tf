@@ -75,7 +75,7 @@ resource "azurerm_key_vault" "sds-kv01-dev-eastus" {
       "Backup",
       "Restore",
       # -Privileged Secret Operations
-      "purge",
+      "Purge",
     ]
 
     certificate_permissions = [
@@ -141,3 +141,5 @@ resource "azurerm_key_vault_secret" "sds-sect01-dev-connection-string-st01" {
 # -- --
 # eee
 # -- --
+usuario: AdministradorJOTA
+Pass= jotajota-123$$##
