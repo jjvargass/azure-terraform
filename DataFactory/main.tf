@@ -101,8 +101,6 @@ resource "azurerm_key_vault" "sds-kv02-dev-eastus" {
   }
 }
 
-
-
 # -- --
 # Storage Account
 # El nombre solo permite minusculas y numeros | sds-st01-dev-eastus => sdsst02deveastus
@@ -139,5 +137,46 @@ resource "azurerm_key_vault_secret" "sds-sect01-dev-connection-string-st01" {
 }
 
 # -- --
-# eee
+# Azure SQL Database
 # -- --
+resource "azurerm_sql_server" "sds-sql01-dev-eastus" {
+  name                         = "sds-sql01-dev-eastus"
+  resource_group_name          = azurerm_resource_group.sds-rg01-dev-eastus.name
+  location                     = azurerm_resource_group.sds-rg01-dev-eastus.location
+  version                      = "12.0"
+  administrator_login          = var.user_sql01
+  administrator_login_password = var.pass_sql01
+
+  tags = {
+    environment   = "dev"
+    project       = "sds"
+  }
+}
+
+# sdsstdb02deveastus storage account de bd
+resource "azurerm_storage_account" "sdsstdb02deveastus" {
+  name                     = "sdsstdb02deveastus"
+  resource_group_name      = azurerm_resource_group.sds-rg01-dev-eastus.name
+  location                 = azurerm_resource_group.sds-rg01-dev-eastus.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
+  name                = "sds-sqldb01-dev-eastus"
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+  location            = azurerm_resource_group.sds-rg01-dev-eastus.location
+  server_name         = azurerm_sql_server.sds-sql01-dev-eastus.name
+
+  extended_auditing_policy {
+    storage_endpoint                        = azurerm_storage_account.sdsstdb02deveastus.primary_blob_endpoint
+    storage_account_access_key              = azurerm_storage_account.sdsstdb02deveastus.primary_access_key
+    storage_account_access_key_is_secondary = true
+    retention_in_days                       = 6
+  }
+
+  tags = {
+    environment   = "dev"
+    project       = "sds"
+  }
+}
