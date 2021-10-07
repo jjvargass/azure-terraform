@@ -20,7 +20,8 @@ resource "azurerm_resource_group" "sds-rg01-dev-eastus" {
   location = "East  US"
 
   tags = {
-    "environment"      = "dev"
+    environment      = "dev"
+    project          = "sds"
   }
 
 }
@@ -36,7 +37,8 @@ resource "azurerm_key_vault" "sds-kv02-dev-eastus" {
   sku_name            = "premium"
 
   tags = {
-    "environment"      = "dev"
+    environment      = "dev"
+    project          = "sds"
   }
 
   access_policy {
@@ -117,7 +119,8 @@ resource "azurerm_storage_account" "sdsst02deveastus" {
   }
 
   tags = {
-    environment = "dev"
+    environment   = "dev"
+    project       = "sds"
   }
 
 }
@@ -160,6 +163,12 @@ resource "azurerm_storage_account" "sdsstdb02deveastus" {
   location                 = azurerm_resource_group.sds-rg01-dev-eastus.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+
+  tags = {
+    environment   = "dev"
+    project       = "sds"
+  }
+
 }
 
 resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
@@ -179,4 +188,5 @@ resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
     environment   = "dev"
     project       = "sds"
   }
+
 }
