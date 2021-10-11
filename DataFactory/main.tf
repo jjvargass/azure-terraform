@@ -199,6 +199,10 @@ resource "azurerm_data_factory" "sds-adf01-dev-eastus" {
   location            = azurerm_resource_group.sds-rg01-dev-eastus.location
   resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   tags = {
     environment   = "dev"
     project       = "sds"
