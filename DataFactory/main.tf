@@ -194,7 +194,7 @@ resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
 # Secreto - connection string de sql Database en Key Vault
 resource "azurerm_key_vault_secret" "sds-sect02-dev-connection-string-sqldb01" {
   name         = "sds-sect02-dev-connection-string-sqldb01"
-  value        = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:sds-sql01-dev-eastus.database.windows.net,1433;Database=sds-sqldb01-dev-eastus;Uid=${var.user_sql01};Pwd=${var.pass_sql01};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+  value        = "Server=tcp:sds-sql01-dev-eastus.database.windows.net,1433;Initial Catalog=sds-sqldb01-dev-eastus;Persist Security Info=False;User ID=${var.user_sql01};Password=${var.pass_sql01};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.sds-kv02-dev-eastus.id
 }
 
