@@ -190,3 +190,54 @@ resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
   }
 
 }
+
+# -- --
+# Azure Data Factory
+# -- --
+resource "azurerm_data_factory" "sds-adf01-dev-eastus" {
+  name                = "sds-adf01-dev-eastus"
+  location            = azurerm_resource_group.sds-rg01-dev-eastus.location
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+
+  tags = {
+    environment   = "dev"
+    project       = "sds"
+  }
+
+}
+
+
+# linked service key vault
+resource "azurerm_data_factory_linked_service_key_vault" "sds-lskv01-dev-eastus-to-kvault" {
+  name                = "sds-lskv01-dev-eastus-to-kvault"
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+  data_factory_name   = azurerm_data_factory.sds-adf01-dev-eastus.name
+  key_vault_id        = azurerm_key_vault.sds-kv02-dev-eastus.id
+}
+
+# linked service azure to blob storage
+resource "azurerm_data_factory_linked_service_azure_blob_storage" "sds-lser01-dev-eastus-to-st02" {
+  name                = "sds-lser01-dev-eastus-to-st02"
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+  data_factory_name   = azurerm_data_factory.sds-adf01-dev-eastus.name
+
+  sas_uri = "https://storageaccountname.blob.core.windows.net"
+  key_vault_sas_token {
+    linked_service_name = azurerm_data_factory_linked_service_key_vault.sds-lskv01-dev-eastus-to-kvault.name
+    secret_name         = "sds-sect01-dev-connection-string-st01"
+  }
+}
+
+# linked service azure to sql database
+# resource "azurerm_data_factory_linked_service_sql_server" "sds-lser02-dev-eastus-to-sql01" {
+#   name                = "sds-lser02-dev-eastus-to-sql01"
+#   resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+#   data_factory_name   = azurerm_data_factory.sds-adf01-dev-eastus.name
+
+#   connection_string = "Integrated Security=False;Data Source=test;Initial Catalog=test;User ID=test;"
+#   key_vault_password {
+#     linked_service_name = azurerm_data_factory_linked_service_key_vault.sds-lskv01-dev-eastus-to-kvault.name
+#     secret_name         = "secret"
+#   }
+
+# }
