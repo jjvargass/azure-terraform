@@ -219,7 +219,6 @@ resource "azurerm_data_factory" "sds-adf01-dev-eastus" {
 
 # access policy del Data Factory
 resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
-  depends_on   = [azurerm_data_factory.sds-adf01-dev-eastus]
   key_vault_id = azurerm_key_vault.sds-kv02-dev-eastus.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = azurerm_data_factory.sds-adf01-dev-eastus.identity.0.principal_id
@@ -229,7 +228,6 @@ resource "azurerm_key_vault_access_policy" "sds-kvap01-dev-eastus" {
     "list",
   ]
 }
-
 
 # linked service key vault
 resource "azurerm_data_factory_linked_service_key_vault" "sds-lskv01-dev-eastus-to-kvault" {
