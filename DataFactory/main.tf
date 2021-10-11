@@ -191,6 +191,13 @@ resource "azurerm_sql_database" "sds-sqldb01-dev-eastus" {
 
 }
 
+# Secreto - connection string de sql Database en Key Vault
+resource "azurerm_key_vault_secret" "sds-sect02-dev-connection-string-sqldb01" {
+  name         = "sds-sect02-dev-connection-string-sqldb01"
+  value        = "Driver={ODBC Driver 13 for SQL Server};Server=tcp:sds-sql01-dev-eastus.database.windows.net,1433;Database=sds-sqldb01-dev-eastus;Uid=${var.user_sql01};Pwd=${var.pass_sql01};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+  key_vault_id = azurerm_key_vault.sds-kv02-dev-eastus.id
+}
+
 # -- --
 # Azure Data Factory
 # -- --
@@ -246,15 +253,14 @@ resource "azurerm_data_factory_linked_service_azure_blob_storage" "sds-lser01-de
 }
 
 # linked service azure to sql database
-# resource "azurerm_data_factory_linked_service_sql_server" "sds-lser02-dev-eastus-to-sql01" {
-#   name                = "sds-lser02-dev-eastus-to-sql01"
-#   resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
-#   data_factory_name   = azurerm_data_factory.sds-adf01-dev-eastus.name
+resource "azurerm_data_factory_linked_service_azure_sql_database" "sds-lser02-dev-eastus-to-sqldb01" {
+  name                = "sds-lser02-dev-eastus-to-sqldb01"
+  resource_group_name = azurerm_resource_group.sds-rg01-dev-eastus.name
+  data_factory_name   = azurerm_data_factory.sds-adf01-dev-eastus.name
 
-#   connection_string = "Integrated Security=False;Data Source=test;Initial Catalog=test;User ID=test;"
-#   key_vault_password {
-#     linked_service_name = azurerm_data_factory_linked_service_key_vault.sds-lskv01-dev-eastus-to-kvault.name
-#     secret_name         = "secret"
-#   }
+  key_vault_connection_string {
+    linked_service_name = azurerm_data_factory_linked_service_key_vault.sds-lskv01-dev-eastus-to-kvault.name
+    secret_name         = "sds-sect02-dev-connection-string-sqldb01"
+  }
 
-# }
+}
